@@ -150,3 +150,27 @@ If you get build errors related to Qt5, make sure that the path for Qt5 is corre
 [PCL Source Github](https://github.com/PointCloudLibrary/pcl)
 
 [PCL Mac Compilation Docs](https://pcl.readthedocs.io/projects/tutorials/en/latest/compiling_pcl_macosx.html#compiling-pcl-macosx)
+
+
+# Docker Instructions
+
+## 0. Build container
+docker build -t pcl-container .
+
+## 1. Allow Local Access to X server
+First, on your host machine, allow local connections to your X server:
+
+xhost +local:
+
+## 2. Run the Docker Container
+
+docker run -it \
+    -e DISPLAY=$DISPLAY \
+    -v /tmp/.X11-unix:/tmp/.X11-unix \
+	-v $(pwd):/app \
+    pcl-container
+
+## 3. Cleanup
+When you're done, it's a good idea to remove the permissions you granted earlier:
+
+xhost -local:
