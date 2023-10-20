@@ -87,8 +87,8 @@ void cityBlock(pcl::visualization::PCLVisualizer::Ptr& viewer, ProcessPointCloud
   bool render_clusters = true;
   bool render_boxes = true;
 
-  //inputCloud = processor.FilterCloud(inputCloud, 0.2f, Eigen::Vector4f (-10.0, -5, -5.0, 1), Eigen::Vector4f (30.0, 5.0, -0.50, 1));
-  inputCloud = processor.FilterCloud(inputCloud, 0.3f, Eigen::Vector4f(-4,-20,-7,1), Eigen::Vector4f(4, 20, 7, 1));
+  inputCloud = processor.FilterCloud(inputCloud, 0.2f, Eigen::Vector4f (-10.0, -5, -5.0, 1), Eigen::Vector4f (30.0, 5.0, -0.50, 1));
+  //inputCloud = processor.FilterCloud(inputCloud, 0.3f, Eigen::Vector4f(-4.0,-20.0,-7.0,1.0), Eigen::Vector4f(4.0, 20.0, 7.0, 1.0));
 
      std::pair<pcl::PointCloud<pcl::PointXYZI>::Ptr, pcl::PointCloud<pcl::PointXYZI>::Ptr> segmentCloud = processor.RansacSegmentPlane(inputCloud, 25, 0.3);
 
