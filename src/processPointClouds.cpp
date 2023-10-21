@@ -43,22 +43,11 @@ typename pcl::PointCloud<PointT>::Ptr ProcessPointClouds<PointT>::FilterCloud(ty
     region.filter(*cloudRegion);
 
     // Also remove points located on the roof of the car
-    std::vector<int> indices;
-    pcl::CropBox<PointT> roof(true);
     region.setMin(Eigen::Vector4f(-1.5, -1.7, -1, 1));
     region.setMax(Eigen::Vector4f(2.6, 1.7, -0.4, 1));
+    region.setNegative(true);
     region.setInputCloud(cloudRegion);
-    region.filter(indices);
-
-    pcl::PointIndices::Ptr inliers{new pcl::PointIndices};
-    for(int point: indices)
-        inliers->indices.push_back(point);
-
-    pcl::ExtractIndices<PointT> extract;
-    extract.setInputCloud(cloudRegion);
-    extract.setIndices(inliers);
-    extract.setNegative(true);
-    extract.filter(*cloudRegion);
+    region.filter(*cloudRegion);
 
 
     auto endTime = std::chrono::steady_clock::now();
