@@ -87,15 +87,26 @@ void cityBlock(pcl::visualization::PCLVisualizer::Ptr& viewer, ProcessPointCloud
   bool render_clusters = true;
   bool render_boxes = true;
 
-  inputCloud = processor.FilterCloud(inputCloud, 0.2f, Eigen::Vector4f (-10.0, -7, -5.0, 1), Eigen::Vector4f (30.0, 7.0, -0.50, 1));
-  //inputCloud = processor.FilterCloud(inputCloud, 0.3f, Eigen::Vector4f(-4.0,-20.0,-7.0,1.0), Eigen::Vector4f(4.0, 20.0, 7.0, 1.0));
+  float filterRes = 0.4;
+  Eigen::Vector4f minPoint(-10.0, -7, -5.0, 1); // (-4.0,-20.0,-7.0,1.0);
+  Eigen::Vector4f maxPoint(30.0, 7.0, -0.50, 1); // (4.0, 20.0, 7.0, 1.0);
+  // segment params
+  int maxIter = 40;
+  float distanceThreshold = 0.3;
+  // cluster params
+  float clusterTolerance = 0.5;
+  int minClusterSize = 20;
+  int maxClusterSize = 500;
+  
+  //inputCloud = processor.FilterCloud(inputCloud, 0.2f, Eigen::Vector4f (-10.0, -7, -5.0, 1), Eigen::Vector4f );  
+  inputCloud = processor.FilterCloud(inputCloud, 0.15f, minPoint, maxPoint);
 
-     std::pair<pcl::PointCloud<pcl::PointXYZI>::Ptr, pcl::PointCloud<pcl::PointXYZI>::Ptr> segmentCloud = processor.RansacSegmentPlane(inputCloud, 25, 0.3);
+     std::pair<pcl::PointCloud<pcl::PointXYZI>::Ptr, pcl::PointCloud<pcl::PointXYZI>::Ptr> segmentCloud = processor.RansacSegmentPlane(inputCloud, maxIter, distanceThreshold);
 
      renderPointCloud(viewer, segmentCloud.first, "roadCloud", Color(0,1,0));
     
     // RENDER CLUSTERING
-    std::vector<pcl::PointCloud<pcl::PointXYZI>::Ptr> cloudClusters = processor.Clustering2(segmentCloud.second, .3, 20, 2000);
+    std::vector<pcl::PointCloud<pcl::PointXYZI>::Ptr> cloudClusters = processor.Clustering2(segmentCloud.second, clusterTolerance, minClusterSize, maxClusterSize);
     int clusterId = 0; 
     std::vector<Color> colors = {Color(1,0,0), Color(0,1,0), Color(0,0,1)};
 
